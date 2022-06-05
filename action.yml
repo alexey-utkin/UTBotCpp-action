@@ -1,4 +1,8 @@
 name: "UTBot code analysis"
+description: "UTBot code analysis allows adding tests and code analysis information by pull request"
+branding:
+  icon: 'terminal'
+  color: 'blue'
 
 on:
   workflow_dispatch:
