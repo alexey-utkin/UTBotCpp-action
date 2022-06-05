@@ -9,12 +9,10 @@ on:
     inputs:
       test_push_info:
         description: 'Do tests need to be pushed'
-        required: true
         default: true 
         type: boolean
       test_delete_info:
         description: 'Do old tests need to be deleted'
-        required: true
         default: false
         type: boolean
   
