@@ -10,22 +10,17 @@ on:
       test_push_info:
         description: 'Do tests need to be pushed'
         required: true
-        default: 'true' 
-        type: choice
-        options:
-        - yes
-        - no
+        default: true 
+        type: boolean
       test_delete_info:
         description: 'Do old tests need to be deleted'
         required: true
-        default: 'false' 
-        type: choice
-        options:
-        - yes
-        - no
+        default: false
+        type: boolean
   
 env:
   utbot_version: "1.0.1"
+  repository_name: "olezhabobrov"
     
 jobs:
   build:
@@ -34,6 +29,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      
     - name: Delete old tests
       if: github.event.inputs.test_delete_info == 'true'
       uses: EndBug/add-and-commit@v9
@@ -41,14 +37,15 @@ jobs:
         remove: 'tests'
         author_name: 'github-actions[utbot]'
         message: 'UTBot code analysis delete old tests'
-        push: true
+        
     - name: Download server executable
       run: |
            mkdir "utbot-release-${{ env.utbot_version }}"
-           wget "https://github.com/olezhabobrov/UTBotCpp/releases/download/v${{ env.utbot_version }}/utbot-release-${{ env.utbot_version }}.zip" -P "${{ github.workspace }}/utbot-release-${{ env.utbot_version }}"
+           wget "https://github.com/${{ env.repository_name }}/UTBotCpp/releases/download/v${{ env.utbot_version }}/utbot-release-${{ env.utbot_version }}.zip" -P "${{ github.workspace }}/utbot-release-${{ env.utbot_version }}"
            unzip "${{ github.workspace }}/utbot-release-${{ env.utbot_version }}/utbot-release-${{ env.utbot_version }}.zip" -d "${{ github.workspace }}/utbot-release-${{ env.utbot_version }}/"
            chmod +x "${{ github.workspace }}/utbot-release-${{ env.utbot_version }}/unpack_and_run_utbot.sh"
            cd "${{ github.workspace }}/utbot-release-${{ env.utbot_version }}" && ./unpack_and_run_utbot.sh
+           
     - name: Testing project
       run: |       
           cd "${{ github.workspace }}/utbot-release-${{ env.utbot_version }}/utbot_distr"
@@ -56,24 +53,35 @@ jobs:
           RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
           UTBOT_CLI_OPTIONS="generate --project-path ${{ github.workspace }} project"
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
-    - name: Push into master with tests
-      if: github.event.inputs.test_push_info == 'true'
-      uses: EndBug/add-and-commit@v9
-      with:
-        add: 'tests codeAnalysis'
-        author_name: 'github-actions[utbot]'
-        message: 'UTBot code analysis add sarif and tests'
-        push: true
-    - name: Push into master without tests
-      if: github.event.inputs.test_push_info == 'false'
-      uses: EndBug/add-and-commit@v9
-      with:
-        add: 'codeAnalysis'
-        author_name: 'github-actions[utbot]'
-        message: 'UTBot code analysis add sarif'
-        push: true
+          
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: codeAnalysis/project_code_analysis.sarif
-    
+        
+    - name: Create Pull Request with tests and codeAnalysis information
+      if: github.event.inputs.test_push_info == 'true'
+      uses: peter-evans/create-pull-request@v4
+      with:
+        add-paths: |
+            tests/
+            codeAnalysis/
+        commit-message: UTBot code analysis add tests and codeAnalysis information
+        branch-suffix: timestamp
+        branch: utbote-code-analysis
+        title: UTBot code analysis
+        body: UTBot code analysis add tests and codeAnalysis information
+        delete-branch: true
+        
+    - name: Create Pull Request with codeAnalysis information
+      if: github.event.inputs.test_push_info == 'false'
+      uses: peter-evans/create-pull-request@v4
+      with:
+        add-paths: |
+            codeAnalysis/
+        commit-message: UTBot code analysis add codeAnalysis information
+        branch-suffix: timestamp
+        branch: utbote-code-analysis
+        title: UTBot code analysis
+        body: UTBot code analysis add codeAnalysis information
+        delete-branch: true
