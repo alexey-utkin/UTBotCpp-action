@@ -16,8 +16,9 @@ on:
         default: false
         type: boolean
     
-jobs:
-  build:
+runs:
+  using: "composite"
+  steps:
     permissions: write-all
     steps:
     - name: Checkout repository
