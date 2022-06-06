@@ -25,7 +25,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
     - name: UTBot code analysis
-      uses: slawa4s/Utbot-Action@test-1.0.0
+      uses: slawa4s/Utbot-Action@test-1.0.1
 ```
