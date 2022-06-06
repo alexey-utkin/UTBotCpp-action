@@ -5,16 +5,15 @@ branding:
   color: 'blue'
 
 on:
-  workflow_dispatch:
-    inputs:
-      test_push_info:
-        description: 'Do tests need to be pushed'
-        default: true 
-        type: boolean
-      test_delete_info:
-        description: 'Do old tests need to be deleted'
-        default: false
-        type: boolean
+  inputs:
+    test_push_info:
+      description: 'Do tests need to be pushed'
+      default: true 
+      type: boolean
+    test_delete_info:
+      description: 'Do old tests need to be deleted'
+      default: false
+      type: boolean
     
 runs:
   using: "composite"
@@ -47,8 +46,14 @@ runs:
           UTBOT_CLI_OPTIONS="generate --project-path ../.. project"
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
       shell: sh
+      
+    - name: Test
+      if: ${{ inputs.test_push_info }}
+      run: echo "True!!!!"
+      shell: sh
         
     - name: Create Pull Request with tests and codeAnalysis information
+      if: ${{ inputs.test_push_info }}
       uses: peter-evans/create-pull-request@v4
       with:
         add-paths: |
