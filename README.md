@@ -5,6 +5,7 @@ You can use this GitHub Action to create pull requests tests and code analysis i
 ## Content
 
 - [Inputs](#inputs)
+- [Installation](#installation)
 - [Examples](#examples)
 
 ## Inputs
@@ -15,6 +16,11 @@ All inputs are
 | --- | --- | --- |
 | `test_push_info` | Add tests to pull request  | true |
 | `test_delete_info` | Delete old tests in pull request | false |
+
+## Installation
+
+* ```Settings > Actions > Allow GitHub Actions to create and approve pull requests```
+* ```permissions: write-all``` line at action before using Utbot Action
 
 ## Examples
 
