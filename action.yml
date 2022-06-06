@@ -8,7 +8,7 @@ on:
   inputs:
     test_push_info:
       description: 'Do tests need to be pushed'
-      default: 'true' 
+      default: 'true'
     test_delete_info:
       description: 'Do old tests need to be deleted'
       default: 'false'
@@ -48,6 +48,10 @@ runs:
     - run: echo "if works!"
       shell: bash
       if: ${{ inputs.test_push_info == 'true' }}
+      
+    - run: echo "if not work"
+      shell: bash
+      if: ${{ inputs.test_push_info != 'true' }}
       
     - name: Create Pull Request with tests and codeAnalysis information
       uses: peter-evans/create-pull-request@v4
