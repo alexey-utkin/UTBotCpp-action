@@ -9,9 +9,11 @@ on:
     test_push_info:
       description: 'Do tests need to be pushed'
       default: 'true'
+      required: false
     test_delete_info:
       description: 'Do old tests need to be deleted'
       default: 'false'
+      required: false
     
 runs:
   using: "composite"
