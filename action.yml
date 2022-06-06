@@ -49,9 +49,8 @@ runs:
       shell: bash
       if: ${{ inputs.test_push_info == 'true' }}
       
-    - run: echo "if not work"
+    - run: echo ${{ inputs.test_push_info }}
       shell: bash
-      if: ${{ inputs.test_push_info != 'true' }}
       
     - name: Create Pull Request with tests and codeAnalysis information
       uses: peter-evans/create-pull-request@v4
