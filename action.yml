@@ -49,7 +49,7 @@ runs:
       shell: sh
         
     - name: Create Pull Request with tests and codeAnalysis information
-      if: github.event.inputs.test_push_info == true
+      if: ${{ github.event.inputs.test_push_info == true }}
       uses: peter-evans/create-pull-request@v4
       with:
         add-paths: |
@@ -63,7 +63,7 @@ runs:
         delete-branch: true
         
     - name: Create Pull Request with codeAnalysis information
-      if: github.event.inputs.test_push_info == false
+      if: ${{ github.event.inputs.test_push_info == false }}
       uses: peter-evans/create-pull-request@v4
       with:
         add-paths: |
@@ -76,12 +76,12 @@ runs:
         delete-branch: true
         
     - name: Test
-      if: github.event.inputs.test_push_info == 'true'
+      if: ${{ github.event.inputs.test_push_info == 'true' }}
       run: echo "Here! w"
       shell: sh
       
     - name: Test
-      if: github.event.inputs.test_push_info == true
+      if: ${{ github.event.inputs.test_push_info == true }}
       run: echo "Here!"
       shell: sh
         
