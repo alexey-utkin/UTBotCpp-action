@@ -45,11 +45,6 @@ runs:
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
       shell: sh
       
-    - name: Test
-      if: ${{ inputs.test_push_info == true }}
-      run: echo "True!!!!"
-      shell: sh
-        
     - name: Create Pull Request with tests and codeAnalysis information
       uses: peter-evans/create-pull-request@v4
       with:
