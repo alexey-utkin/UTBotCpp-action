@@ -49,7 +49,6 @@ runs:
       shell: sh
         
     - name: Create Pull Request with tests and codeAnalysis information
-      if: github.event.inputs.test_push_info
       uses: peter-evans/create-pull-request@v4
       with:
         add-paths: |
@@ -61,29 +60,6 @@ runs:
         title: UTBot code analysis
         body: UTBot code analysis add tests and codeAnalysis information
         delete-branch: true
-        
-    - name: Create Pull Request with codeAnalysis information
-      if: !github.event.inputs.test_push_info
-      uses: peter-evans/create-pull-request@v4
-      with:
-        add-paths: |
-            codeAnalysis/
-        commit-message: UTBot code analysis add codeAnalysis information
-        branch-suffix: timestamp
-        branch: utbote-code-analysis
-        title: UTBot code analysis
-        body: UTBot code analysis add codeAnalysis information
-        delete-branch: true
-        
-    - name: Test
-      if: github.event.inputs.test_push_info
-      run: echo "Here! w"
-      shell: sh
-      
-    - name: Test
-      if: !github.event.inputs.test_push_info
-      run: echo "Here!"
-      shell: sh
         
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
