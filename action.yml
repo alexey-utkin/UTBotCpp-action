@@ -8,10 +8,10 @@ on:
   inputs:
     test_push_info:
       description: 'Do tests need to be pushed'
-      default: true 
+      default: 'true' 
     test_delete_info:
       description: 'Do old tests need to be deleted'
-      default: false
+      default: 'false'
     
 runs:
   using: "composite"
@@ -44,6 +44,10 @@ runs:
           UTBOT_CLI_OPTIONS="generate --project-path ../.. project"
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
       shell: sh
+      
+    - run: echo "if works!"
+      shell: bash
+      if: ${{ inputs.test_push_info == 'true' }}
       
     - name: Create Pull Request with tests and codeAnalysis information
       uses: peter-evans/create-pull-request@v4
