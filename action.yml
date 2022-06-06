@@ -17,6 +17,8 @@ on:
         type: boolean
     
 runs:
+  permissions:
+      pull-requests: write
   using: "composite"
   steps:
     - name: Checkout repository
