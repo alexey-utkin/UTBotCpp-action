@@ -13,7 +13,7 @@ You can use this GitHub Action to create pull requests tests and code analysis i
 All inputs are required
 
 | Name | Description | required |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | `test_push_info` | Add tests to pull request  | Yes |
 | `test_delete_info` | Delete old tests in pull request | Yes |
 | `utbot_version` | UTBot version to run  | Yes |
