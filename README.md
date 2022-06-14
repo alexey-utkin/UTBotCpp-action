@@ -14,11 +14,11 @@ All inputs are required
 
 | Name | Description | required |
 | --- | --- | --- |
-| `test_push_info` | Add tests to pull request  | Yes |
-| `test_delete_info` | Delete old tests in pull request | Yes |
-| `utbot_version` | UTBot version to run  | Yes |
-| `launch_param` | Valid values are `project`, `directory` and `file` | Yes |
-| `param_name` | `directory` or `file` name | 'No' for the 'project', 'Yes' for the rest |
+| `test_push_info` | Add tests to pull request  | `Yes` |
+| `test_delete_info` | Delete old tests in pull request | `Yes` |
+| `utbot_version` | UTBot version to run  | `Yes` |
+| `launch_param` | Valid values are `project`, `directory` and `file` | `Yes` |
+| `param_name` | `directory` or `file` name | `No` for the `project`, `Yes` for the rest |
 
 ## Installation
 
