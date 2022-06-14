@@ -21,6 +21,15 @@ runs:
     - name: Checkout repository
       uses: actions/checkout@v2
       
+      
+    - run: echo "with"
+      if: github.event.inputs.test_push_info == 'true'
+      shell: sh
+      
+    - run: echo "without"
+      if: github.event.inputs.test_push_info
+      shell: sh
+      
     - name: Delete old tests
       if: github.event.inputs.test_delete_info == 'true'
       uses: EndBug/add-and-commit@v9
