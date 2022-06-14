@@ -9,11 +9,11 @@ on:
     test_push_info:
       description: 'Do tests need to be pushed'
       default: 'true'
-      required: false
+      required: true
     test_delete_info:
       description: 'Do old tests need to be deleted'
       default: 'false'
-      required: false
+      required: true
     
 runs:
   using: "composite"
@@ -21,17 +21,8 @@ runs:
     - name: Checkout repository
       uses: actions/checkout@v2
       
-      
-    - run: echo "with"
-      if: github.event.inputs.test_push_info == 'true'
-      shell: sh
-      
-    - run: echo "without"
-      if: github.event.inputs.test_push_info
-      shell: sh
-      
     - name: Delete old tests
-      if: github.event.inputs.test_delete_info == 'true'
+      if: ${{ inputs.test_delete_info == 'true' }}
       uses: EndBug/add-and-commit@v9
       with:
         remove: 'tests'
@@ -56,11 +47,32 @@ runs:
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
       shell: sh
       
+    - run: echo "if delete works!"
+      shell: bash
+      if: ${{ inputs.test_delete_info == 'false' }}
+      
+    - run: echo ${{ inputs.test_delete_info }}
+      shell: bash
+      
     - name: Create Pull Request with tests and codeAnalysis information
       uses: peter-evans/create-pull-request@v4
+      if: ${{ inputs.test_push_info == 'true' }}
       with:
         add-paths: |
             tests/
+            codeAnalysis/
+        commit-message: UTBot code analysis add tests and codeAnalysis information
+        branch-suffix: timestamp
+        branch: utbote-code-analysis
+        title: UTBot code analysis
+        body: UTBot code analysis add tests and codeAnalysis information
+        delete-branch: true
+        
+    - name: Create Pull Request with tests and codeAnalysis information
+      uses: peter-evans/create-pull-request@v4
+      if: ${{ inputs.test_push_info != 'true' }}
+      with:
+        add-paths: |
             codeAnalysis/
         commit-message: UTBot code analysis add tests and codeAnalysis information
         branch-suffix: timestamp
