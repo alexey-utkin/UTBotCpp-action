@@ -15,6 +15,9 @@ on:
     utbot_version:
       description: 'UTBot version'
       required: true
+    launch_param:
+      description: 'Run utbot to all project, directory or file'
+      required: true
     
 runs:
   using: "composite"
@@ -33,27 +36,20 @@ runs:
     - name: Download server executable
       run: |
            mkdir "utbot-release-${{ inputs.utbot_version }}"
-           wget "https://github.com/olezhabobrov/UTBotCpp/releases/download/v1.0.1/utbot-release-1.0.1.zip" -P "./utbot-release-1.0.1"
-           unzip "./utbot-release-1.0.1/utbot-release-1.0.1.zip" -d "./utbot-release-1.0.1/"
-           chmod +x "./utbot-release-1.0.1/unpack_and_run_utbot.sh"
-           cd "./utbot-release-1.0.1" && ./unpack_and_run_utbot.sh
+           wget "https://github.com/olezhabobrov/UTBotCpp/releases/download/v${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -P "./utbot-release-${{ inputs.utbot_version }}"
+           unzip "./utbot-release-${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -d "./utbot-release-${{ inputs.utbot_version }}/"
+           chmod +x "./utbot-release-${{ inputs.utbot_version }}/unpack_and_run_utbot.sh"
+           cd "./utbot-release-${{ inputs.utbot_version }}" && ./unpack_and_run_utbot.sh
       shell: sh
            
     - name: Testing project
       run: |       
-          cd "./utbot-release-1.0.1/utbot_distr"
+          cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
           export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
           RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
           UTBOT_CLI_OPTIONS="generate --project-path ../.. project"
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
       shell: sh
-      
-    - run: echo "if delete works!"
-      shell: bash
-      if: ${{ inputs.test_delete_info == 'false' }}
-      
-    - run: echo ${{ inputs.test_delete_info }}
-      shell: bash
       
     - name: Create Pull Request with tests and codeAnalysis information
       uses: peter-evans/create-pull-request@v4
@@ -63,7 +59,7 @@ runs:
             tests/
             codeAnalysis/
         commit-message: UTBot code analysis add tests and codeAnalysis information
-        branch-suffix: timestamp
+        branch-suffix: short-commit-hash
         branch: utbote-code-analysis
         title: UTBot code analysis
         body: UTBot code analysis add tests and codeAnalysis information
@@ -76,7 +72,7 @@ runs:
         add-paths: |
             codeAnalysis/
         commit-message: UTBot code analysis add tests and codeAnalysis information
-        branch-suffix: timestamp
+        branch-suffix: short-commit-hash
         branch: utbote-code-analysis
         title: UTBot code analysis
         body: UTBot code analysis add tests and codeAnalysis information
