@@ -10,7 +10,7 @@ You can use this GitHub Action to create pull requests tests and code analysis i
 
 ## Inputs
 
-All inputs are 
+All inputs are required
 
 | Name | Description | Default |
 | --- | --- | --- |
