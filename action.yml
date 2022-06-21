@@ -18,6 +18,9 @@ on:
     launch_param:
       description: 'Run utbot to all project, directory or file'
       required: true
+    param_name:
+      description: 'directory or file name'
+      required: true
     
 runs:
   using: "composite"
@@ -43,11 +46,22 @@ runs:
       shell: sh
            
     - name: Testing project
+      if: ${{ inputs.launch_param == 'project' }}
       run: |       
           cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
           export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
           RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
           UTBOT_CLI_OPTIONS="generate --project-path ../.. project"
+          $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
+      shell: sh
+      
+    - name: Testing file
+      if: ${{ inputs.launch_param == 'file' }}
+      run: |       
+          cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
+          export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
+          RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
+          UTBOT_CLI_OPTIONS="generate --project-path ../.. file --file-path ../../${{ inputs.param_name }}"
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
       shell: sh
       
