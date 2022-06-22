@@ -65,6 +65,16 @@ runs:
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
       shell: sh
       
+    - name: Testing file
+      if: ${{ inputs.launch_param == 'directory' }}
+      run: |       
+          cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
+          export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
+          RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
+          UTBOT_CLI_OPTIONS="generate --project-path ../../${{ inputs.param_name }} folder --folder-path ../../${{ inputs.param_name }}"
+          $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
+      shell: sh
+      
     - name: Create Pull Request with tests and codeAnalysis information
       uses: peter-evans/create-pull-request@v4
       if: ${{ inputs.test_push_info == 'true' }}
