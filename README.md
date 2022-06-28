@@ -37,10 +37,10 @@ jobs:
     permissions: write-all
     steps:
     - name: UTBot code analysis
-      uses: slawa4s/Utbot-Action@test-1.0.1
+      uses: slawa4s/Utbot-Action@test-1.0.23
       with:
         test_push_info: 'true'
         test_delete_info: 'false'
-        utbot_version: '1.0.1'
+        utbot_version: '2022.06.13'
         launch_param: 'project'
 ```
