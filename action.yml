@@ -40,7 +40,7 @@ runs:
       run: |
            mkdir "utbot-release-${{ inputs.utbot_version }}"
            wget -qq "https://github.com/olezhabobrov/UTBotCpp/releases/download/v${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -P "./utbot-release-${{ inputs.utbot_version }}"
-           unzip - qq"./utbot-release-${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -d "./utbot-release-${{ inputs.utbot_version }}/"
+           unzip -qq "./utbot-release-${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -d "./utbot-release-${{ inputs.utbot_version }}/"
            chmod +x "./utbot-release-${{ inputs.utbot_version }}/unpack_and_run_utbot.sh"
            cd "./utbot-release-${{ inputs.utbot_version }}" && ./unpack_and_run_utbot.sh
       shell: sh
