@@ -6,19 +6,19 @@ branding:
 
 on:
   inputs:
-    test_push_info:
+    add_tests:
       description: 'Do tests need to be pushed'
       required: true
-    test_delete_info:
+    refresh_tests:
       description: 'Do old tests need to be deleted'
       required: true
     utbot_version:
       description: 'UTBot version'
       required: true
-    launch_param:
+    scope:
       description: 'Run utbot to all project, directory or file'
       required: true
-    param_name:
+    path:
       description: 'directory or file name'
       required: true
     
@@ -29,7 +29,7 @@ runs:
       uses: actions/checkout@v2
       
     - name: Delete old tests
-      if: ${{ inputs.test_delete_info == 'true' }}
+      if: ${{ inputs.refresh_tests == 'true' }}
       uses: EndBug/add-and-commit@v9
       with:
         remove: 'tests'
@@ -39,14 +39,14 @@ runs:
     - name: Download server executable
       run: |
            mkdir "utbot-release-${{ inputs.utbot_version }}"
-           wget "https://github.com/olezhabobrov/UTBotCpp/releases/download/v${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -P "./utbot-release-${{ inputs.utbot_version }}"
-           unzip "./utbot-release-${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -d "./utbot-release-${{ inputs.utbot_version }}/"
+           wget -qq "https://github.com/olezhabobrov/UTBotCpp/releases/download/v${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -P "./utbot-release-${{ inputs.utbot_version }}"
+           unzip - qq"./utbot-release-${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -d "./utbot-release-${{ inputs.utbot_version }}/"
            chmod +x "./utbot-release-${{ inputs.utbot_version }}/unpack_and_run_utbot.sh"
            cd "./utbot-release-${{ inputs.utbot_version }}" && ./unpack_and_run_utbot.sh
       shell: sh
            
     - name: Testing project
-      if: ${{ inputs.launch_param == 'project' }}
+      if: ${{ inputs.scope == 'project' }}
       run: |       
           cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
           export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
@@ -56,29 +56,29 @@ runs:
       shell: sh
       
     - name: Testing file
-      if: ${{ inputs.launch_param == 'file' }}
+      if: ${{ inputs.scope == 'file' }}
       run: |       
           cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
           export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
           RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
-          UTBOT_CLI_OPTIONS="generate --project-path ../.. file --file-path ../../${{ inputs.param_name }}"
+          UTBOT_CLI_OPTIONS="generate --project-path ../.. file --file-path ../../${{ inputs.path }}"
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
       shell: sh
       
-    - name: Testing file
-      if: ${{ inputs.launch_param == 'directory' }}
+    - name: Testing directory
+      if: ${{ inputs.scope == 'directory' }}
       run: |       
           cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
           export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
           RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
-          UTBOT_CLI_OPTIONS="generate --project-path ../../${{ inputs.param_name }} folder --folder-path ../../${{ inputs.param_name }}"
+          UTBOT_CLI_OPTIONS="generate --project-path ../../${{ inputs.path }} folder --folder-path ../../${{ inputs.path }}"
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
           ls
       shell: sh
       
     - name: Create Pull Request with tests and codeAnalysis information
       uses: peter-evans/create-pull-request@v4
-      if: ${{ inputs.test_push_info == 'true' }}
+      if: ${{ inputs.add_tests == 'true' }}
       with:
         add-paths: |
             tests/
@@ -92,7 +92,7 @@ runs:
         
     - name: Create Pull Request with tests and codeAnalysis information
       uses: peter-evans/create-pull-request@v4
-      if: ${{ inputs.test_push_info != 'true' }}
+      if: ${{ inputs.add_tests != 'true' }}
       with:
         add-paths: |
             codeAnalysis/
