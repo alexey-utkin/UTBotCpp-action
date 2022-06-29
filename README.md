@@ -17,8 +17,8 @@ add_tests, refresh_tests, tests_scope, scope_path
 | `add_tests` | 'true' / 'false' | Add tests to pull request  | `Yes` |
 | `refresh_tests` | 'true' / 'false' | Delete old tests in pull request | `Yes` |
 | `utbot_version` | xxxx.xx[.xx] | UTBot version to run  | `Yes` |
-| `tests_scope` |  `project` / `directory` / `file` | Testing scope | `Yes` |
-| `scope_path` | Realtive path string | `directory` or `file` path | `No` for the `project`, `Yes` for the rest |
+| `scope` |  `project` / `directory` / `file` | Testing scope | `Yes` |
+| `path` | Realtive path string | `directory` or `file` path | `No` for the `project`, `Yes` for the rest |
 
 ## Installation
 
@@ -42,5 +42,5 @@ jobs:
         add_tests: 'true'
         refresh_tests: 'false'
         utbot_version: '2022.06.13'
-        tests_scope: 'project'
+        scope: 'project'
 ```
