@@ -11,14 +11,14 @@ You can use this GitHub Action to create pull requests tests and code analysis i
 ## Inputs
 
 All inputs are required
-
-| Name | Description | required |
-| --- | --- | --- |
-| `test_push_info` | Add tests to pull request  | `Yes` |
-| `test_delete_info` | Delete old tests in pull request | `Yes` |
-| `utbot_version` | UTBot version to run  | `Yes` |
-| `launch_param` | Valid values are `project`, `directory` and `file` | `Yes` |
-| `param_name` | `directory` or `file` name | `No` for the `project`, `Yes` for the rest |
+add_tests, refresh_tests, tests_scope, scope_path
+| Name | Type | Description | Required |
+| --- | --- | --- | --- |
+| `add_tests` | 'true' / 'false' | Add tests to pull request  | `Yes` |
+| `refresh_tests` | 'true' / 'false' | Delete old tests in pull request | `Yes` |
+| `utbot_version` | xxxx.xx[.xx] | UTBot version to run  | `Yes` |
+| `tests_scope` |  `project` / `directory` / `file` | Testing scope | `Yes` |
+| `scope_path` | Realtive path string | `directory` or `file` path | `No` for the `project`, `Yes` for the rest |
 
 ## Installation
 
@@ -39,8 +39,8 @@ jobs:
     - name: UTBot code analysis
       uses: slawa4s/Utbot-Action@test-1.0.23
       with:
-        test_push_info: 'true'
-        test_delete_info: 'false'
+        add_tests: 'true'
+        refresh_tests: 'false'
         utbot_version: '2022.06.13'
-        launch_param: 'project'
+        tests_scope: 'project'
 ```
