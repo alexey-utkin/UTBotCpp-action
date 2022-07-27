@@ -81,6 +81,7 @@ runs:
       if: ${{ inputs.add_tests == 'true' }}
       with:
         add-paths: |
+            utbot-release-2022.7.3/utbot_distr/logs/
             build/
             tests/
             codeAnalysis/
@@ -96,6 +97,7 @@ runs:
       if: ${{ inputs.add_tests != 'true' }}
       with:
         add-paths: |
+            utbot-release-2022.7.3/utbot_distr/logs/
             build/
             codeAnalysis/
         commit-message: UTBot code analysis add tests and codeAnalysis information
