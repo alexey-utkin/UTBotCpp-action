@@ -62,7 +62,14 @@ runs:
           export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
           RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
           UTBOT_CLI_OPTIONS="generate --project-path ../.. file --file-path ../../${{ inputs.path }}"
+          echo "before"
+          pwd
+          ls -lah ../..
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
+          echo "after"
+          ls -lah ../..
+          ls -lah ../../build
+          cat ../../build/compile_commands.json
       shell: sh
       
     - name: Testing directory
