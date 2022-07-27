@@ -26,8 +26,85 @@ runs:
   using: "composite"
   steps:
     - name: Checkout repository
-      uses: actions/checkout@v2  
-
+      uses: actions/checkout@v2
+      
+    - name: Delete old tests
+      if: ${{ inputs.refresh_tests == 'true' }}
+      uses: EndBug/add-and-commit@v9
+      with:
+        remove: 'tests'
+        author_name: 'github-actions[utbot]'
+        message: 'UTBot code analysis delete old tests'
+        
+    - name: Download server executable
+      run: |
+           mkdir "utbot-release-${{ inputs.utbot_version }}"
+           wget -qq "https://github.com/UnitTestBot/UTBotCpp/releases/download/${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -P "./utbot-release-${{ inputs.utbot_version }}"
+           unzip -qq "./utbot-release-${{ inputs.utbot_version }}/utbot-release-${{ inputs.utbot_version }}.zip" -d "./utbot-release-${{ inputs.utbot_version }}/"
+           chmod +x "./utbot-release-${{ inputs.utbot_version }}/unpack_and_run_utbot.sh"
+           cd "./utbot-release-${{ inputs.utbot_version }}" && ./unpack_and_run_utbot.sh
+      shell: sh
+           
+    - name: Testing project
+      if: ${{ inputs.scope == 'project' }}
+      run: |       
+          cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
+          export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
+          RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
+          UTBOT_CLI_OPTIONS="generate --project-path ../.. project"
+          $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
+      shell: sh
+      
+    - name: Testing file
+      if: ${{ inputs.scope == 'file' }}
+      run: |       
+          cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
+          export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
+          RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
+          UTBOT_CLI_OPTIONS="generate --project-path ../.. file --file-path ../../${{ inputs.path }}"
+          $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
+      shell: sh
+      
+    - name: Testing directory
+      if: ${{ inputs.scope == 'directory' }}
+      run: |       
+          cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
+          export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
+          RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
+          UTBOT_CLI_OPTIONS="generate --project-path ../../${{ inputs.path }} folder --folder-path ../../${{ inputs.path }}"
+          $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
+          ls
+      shell: sh
+      
+    - name: Create Pull Request with tests and codeAnalysis information
+      uses: peter-evans/create-pull-request@v4
+      if: ${{ inputs.add_tests == 'true' }}
+      with:
+        add-paths: |
+            build/
+            tests/
+            codeAnalysis/
+        commit-message: UTBot code analysis add tests and codeAnalysis information
+        branch-suffix: short-commit-hash
+        branch: utbote-code-analysis
+        title: UTBot code analysis
+        body: UTBot code analysis add tests and codeAnalysis information
+        delete-branch: true
+        
+    - name: Create Pull Request with tests and codeAnalysis information
+      uses: peter-evans/create-pull-request@v4
+      if: ${{ inputs.add_tests != 'true' }}
+      with:
+        add-paths: |
+            build/
+            codeAnalysis/
+        commit-message: UTBot code analysis add tests and codeAnalysis information
+        branch-suffix: short-commit-hash
+        branch: utbote-code-analysis
+        title: UTBot code analysis
+        body: UTBot code analysis add tests and codeAnalysis information
+        delete-branch: true
+        
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v2
       with:
