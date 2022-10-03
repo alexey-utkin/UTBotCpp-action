@@ -61,13 +61,8 @@ runs:
           cd "./utbot-release-${{ inputs.utbot_version }}/utbot_distr"
           export CURRENT_FOLDER="$( cd $( dirname . ) && pwd )"
           RUN_SYSTEM_SCRIPT_PATH=$CURRENT_FOLDER/utbot_run_system.sh
-          cd ../..
-          echo "before"
-          pwd
-          ls -lah .
-          $RUN_SYSTEM_SCRIPT_PATH cli generate --project-path . file --file-path "${{ inputs.path }}"
-          echo "after"
-          cat ./build/compile_commands.json
+          UTBOT_CLI_OPTIONS="generate --project-path ../.. file --file-path ../../${{ inputs.path }}"
+          $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
       shell: sh
       
     - name: Testing directory
@@ -81,38 +76,34 @@ runs:
           ls
       shell: sh
       
-    - name: Create Pull Request with tests and codeAnalysis information
+    - name: Create Pull Request with tests and utbot_report information
       uses: peter-evans/create-pull-request@v4
       if: ${{ inputs.add_tests == 'true' }}
       with:
         add-paths: |
-            utbot-release-2022.7.3/utbot_distr/logs/
-            build/
             tests/
-            codeAnalysis/
-        commit-message: UTBot code analysis add tests and codeAnalysis information
+            utbot_report/
+        commit-message: UTBot code analysis add tests and utbot_report information
         branch-suffix: short-commit-hash
         branch: utbote-code-analysis
         title: UTBot code analysis
-        body: UTBot code analysis add tests and codeAnalysis information
+        body: UTBot code analysis add tests and utbot_report information
         delete-branch: true
         
-    - name: Create Pull Request with tests and codeAnalysis information
+    - name: Create Pull Request with tests and utbot_report information
       uses: peter-evans/create-pull-request@v4
       if: ${{ inputs.add_tests != 'true' }}
       with:
         add-paths: |
-            utbot-release-2022.7.3/utbot_distr/logs/
-            build/
-            codeAnalysis/
-        commit-message: UTBot code analysis add tests and codeAnalysis information
+            utbot_report/
+        commit-message: UTBot code analysis add tests and utbot_report information
         branch-suffix: short-commit-hash
         branch: utbote-code-analysis
         title: UTBot code analysis
-        body: UTBot code analysis add tests and codeAnalysis information
+        body: UTBot code analysis add tests and utbot_report information
         delete-branch: true
         
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: codeAnalysis/project_code_analysis.sarif
+        sarif_file: utbot_report/project_code_analysis.sarif
