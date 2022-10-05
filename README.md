@@ -41,6 +41,6 @@ jobs:
       with:
         add_tests: 'true'
         refresh_tests: 'false'
-        utbot_version: '2022.06.13'
+        utbot_version: '2022.10.3'
         scope: 'project'
 ```
