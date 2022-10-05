@@ -37,7 +37,7 @@ jobs:
     permissions: write-all
     steps:
     - name: UTBot code analysis
-      uses: slawa4s/Utbot-Action@test-1.0.26
+      uses: alexey-utkin/Utbot-Action@test-1.0.32
       with:
         add_tests: 'true'
         refresh_tests: 'false'
