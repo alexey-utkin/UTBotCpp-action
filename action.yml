@@ -57,7 +57,7 @@ runs:
           UTBOT_CLI_OPTIONS="generate --project-path ../.. project"
           $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_OPTIONS
           RUN_TESTS="${{ inputs.runtests }}"
-          if [ $RUN_TESTS != 'false' ]
+          if [ $RUN_TESTS == 'true' ]
           then
             UTBOT_CLI_RUN_OPTIONS="run --project-path ../.. project"
             $RUN_SYSTEM_SCRIPT_PATH "cli" $UTBOT_CLI_RUN_OPTIONS
